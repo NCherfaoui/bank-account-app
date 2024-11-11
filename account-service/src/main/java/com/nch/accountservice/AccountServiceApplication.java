@@ -1,5 +1,6 @@
 package com.nch.accountservice;
 
+import com.nch.accountservice.clients.CustomerRestClient;
 import com.nch.accountservice.entities.BankAccount;
 import com.nch.accountservice.enums.AccountType;
 import com.nch.accountservice.repository.BankAccountRepository;
@@ -22,8 +23,31 @@ public class AccountServiceApplication {
 	}
 
 	@Bean
-	CommandLineRunner commandLineRunner(BankAccountRepository accountRepository) {
+	CommandLineRunner commandLineRunner(BankAccountRepository accountRepository, CustomerRestClient customerRestClient) {
 		return args -> {
+			customerRestClient.allCustomers().forEach(customer -> {
+				List<BankAccount> accountList = List.of(
+						BankAccount.builder()
+								.accountId(UUID.randomUUID().toString())
+								.currency("EUR")
+								.customerId(customer.getId())
+								.balance(Math.random()*80000)
+								.createdAt(LocalDate.now())
+								.type(AccountType.CURRENT_ACCOUNT)
+								.build(),
+						BankAccount.builder()
+								.accountId(UUID.randomUUID().toString())
+								.currency("EUR")
+								.customerId(customer.getId())
+								.balance(Math.random()*65400)
+								.createdAt(LocalDate.now())
+								.type(AccountType.SAVING_ACCOUNT)
+								.build()
+				);
+				accountRepository.saveAll(accountList);
+			});
+		};
+/*	return args -> {
 			List<BankAccount> accountList = List.of(
 					BankAccount.builder()
 							.accountId(UUID.randomUUID().toString())
@@ -45,5 +69,8 @@ public class AccountServiceApplication {
 			accountRepository.saveAll(accountList);
 		};
 	}
+*/
+	};
+
 
 }
