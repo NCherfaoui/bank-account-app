@@ -93,3 +93,8 @@ services:
       - DISCOVERY_SERVICE_URL=http://discovery-service:8761/eureka/
       - CONFIG_SERVER_URL=http://config-service:9999
 
+  front-end-angular:
+    build: ./angular-front-end
+    container_name: front-end-angular
+    ports:
+      - '82:80'
