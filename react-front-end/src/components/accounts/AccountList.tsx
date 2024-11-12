@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import AccountForm from './AccountForm';
 
@@ -39,16 +39,16 @@ const AccountList: React.FC = () => {
         fetchAccounts();
     }, []);
 
-    const addAccount = async (newAccount: { name: string; balance: number }) => {
+    const addAccount = async (newAccount: { balance: number; currency: string; type: string; customerId: number }) => {
         try {
             const account: Account = {
                 accountId: (accounts.length + 1).toString(),
                 balance: newAccount.balance,
                 createdAt: new Date().toISOString(),
-                currency: 'EUR',
-                type: 'CURRENT_ACCOUNT',
-                customer: {id: 1, firstName: 'John', lastName: 'Doe', email: 'john@doe'},
-                customerId: 1,
+                currency: newAccount.currency,
+                type: newAccount.type,
+                customer: {id: newAccount.customerId, firstName: 'John', lastName: 'Doe', email: 'john@doe'},
+                customerId: newAccount.customerId,
             };
             const response = await axios.post('http://localhost:8888/ACCOUNT-SERVICE/accounts', account);
             setAccounts([...accounts, response.data]);
@@ -72,7 +72,7 @@ const AccountList: React.FC = () => {
         setEditingId(id);
     };
 
-    const saveEdit = async (id: string, newName: string, newBalance: number) => {
+    const saveEdit = async (id: string, newBalance: number) => {
         try {
             const updatedAccount = {balance: newBalance};
             const response = await axios.put(`http://localhost:8888/ACCOUNT-SERVICE/accounts/${id}`, updatedAccount);
@@ -147,7 +147,7 @@ const AccountList: React.FC = () => {
                                     <button
                                         onClick={() => {
                                             const balanceInput = document.getElementById(`balance-${account.accountId}`) as HTMLInputElement;
-                                            saveEdit(account.accountId, account.customer.firstName, parseFloat(balanceInput.value));
+                                            saveEdit(account.accountId, parseFloat(balanceInput.value));
                                         }}
                                         className="bg-green-500 text-white p-1 rounded mr-2"
                                     >

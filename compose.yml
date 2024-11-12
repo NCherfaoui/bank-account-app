@@ -98,3 +98,9 @@ services:
     container_name: front-end-angular
     ports:
       - '82:80'
+
+  front-end-react:
+    build: ./react-front-end
+    container_name: front-end-react
+    ports:
+      - '83:80'

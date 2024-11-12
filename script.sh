@@ -1,5 +1,5 @@
 for dir in */; do
   cd "$dir"
-  mvn clean package -DskipTests
+  ./mvnw clean package -DskipTests
   cd ..
 done
